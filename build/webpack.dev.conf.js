@@ -5,6 +5,7 @@ const config = require('../config')
 const merge = require('webpack-merge')
 const path = require('path')
 const baseWebpackConfig = require('./webpack.base.conf')
+const BundleTracker  = require('webpack-bundle-tracker')
 const CopyWebpackPlugin = require('copy-webpack-plugin')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 const FriendlyErrorsPlugin = require('friendly-errors-webpack-plugin')
@@ -42,7 +43,10 @@ const devWebpackConfig = merge(baseWebpackConfig, {
     quiet: true, // necessary for FriendlyErrorsPlugin
     watchOptions: {
       poll: config.dev.poll,
-    }
+    },
+    headers: {
+      "Access-Control-Allow-Origin":"\*"
+    },
   },
   plugins: [
     new webpack.DefinePlugin({
@@ -64,7 +68,8 @@ const devWebpackConfig = merge(baseWebpackConfig, {
         to: config.dev.assetsSubDirectory,
         ignore: ['.*']
       }
-    ])
+    ]),
+    new BundleTracker({path: __dirname, filename: '../webpack-stats.json'})
   ]
 })
 
